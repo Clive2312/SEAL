@@ -15,12 +15,29 @@ char base_path[] = "../../../dataset/sift/passages.fvecs";
 char query_path[] = "../../../dataset/sift/queries.fvecs";
 char gt_path[] = "../../../dataset/sift/gt_100.ivecs";
 
-int nc = 1000;
+// kmeans
+// int nc = 1000;
+// size_t slot_count = 8192;
+// int dim = 128;
+// int node_per_cluster = 3871;
+// int num_queries = 1;
+// int k = 10;
+
+// // trip
+int nc = 1250;
 size_t slot_count = 8192;
-int dim = 128;
-int node_per_cluster = 1000;
+int dim = 768;
+int node_per_cluster = 4191;
 int num_queries = 1;
 int k = 10;
+
+// msmarco
+// int nc = 1250;
+// size_t slot_count = 8192;
+// int dim = 768;
+// int node_per_cluster = 3871;
+// int num_queries = 1;
+// int k = 10;
 
 
 void send_ciphertext(NetIO *io, Ciphertext &ct) {
@@ -301,6 +318,8 @@ int main(int argc, char **argv){
 
         int num_embed_per_ctx = slot_count / dim;
         int num_ctx_per_cluster = (node_per_cluster / num_embed_per_ctx) + 1;
+
+        return 0;
 
         // Waiting for server to be ready
         cout << "Waiting for server to be ready..." << endl;
