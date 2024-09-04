@@ -3,6 +3,7 @@
 #include "ArgMapping.h"
 #include "file_io.h"
 #include <chrono>
+#include <omp.h>
 
 using namespace std;
 using namespace seal;
@@ -11,31 +12,37 @@ int party = 0;
 int port = 8000;
 string address = "127.0.0.1";
 
-char base_path[] = "../../../dataset/sift/passages.fvecs";
-char query_path[] = "../../../dataset/sift/queries.fvecs";
-char gt_path[] = "../../../dataset/sift/gt_100.ivecs";
-
-// kmeans
-// int nc = 1000;
-// size_t slot_count = 8192;
-// int dim = 128;
-// int node_per_cluster = 3871;
-// int num_queries = 1;
-// int k = 10;
-
-// // trip
-int nc = 1250;
+// LAION
+int nc = 407;
 size_t slot_count = 8192;
-int dim = 768;
-int node_per_cluster = 4191;
+int dim = 512;
+int node_per_cluster = 703;
 int num_queries = 1;
 int k = 10;
 
-// msmarco
-// int nc = 1250;
+// sift
+// int nc = 1000;
+// size_t slot_count = 8192;
+// int dim = 1452;
+// int node_per_cluster = 1361;
+// int num_queries = 1;
+// int k = 10;
+
+
+
+// trip
+// int nc = 1530;
 // size_t slot_count = 8192;
 // int dim = 768;
-// int node_per_cluster = 3871;
+// int node_per_cluster = 3272;
+// int num_queries = 1;
+// int k = 10;
+
+// msmarco
+// int nc = 3801;
+// size_t slot_count = 8192;
+// int dim = 768;
+// int node_per_cluster = 7224;
 // int num_queries = 1;
 // int k = 10;
 
@@ -200,8 +207,12 @@ int main(int argc, char **argv){
         vector<vector<Ciphertext>> db;
         int num_embed_per_ctx = slot_count / dim;
         int num_ctx_per_cluster = (node_per_cluster / num_embed_per_ctx) + 1;
+
+        cout << "- num_embed_per_ctx: " << num_embed_per_ctx << endl;
+        cout << "- num_ctx_per_cluster:" << num_ctx_per_cluster << endl;
         db.resize(nc);
 
+        #pragma omp parallel for
         for(int cid = 0; cid < nc; cid++){
             for(int i = 0; i < num_ctx_per_cluster; i++){
                 vector<uint64_t> pod(slot_count, 0ULL);
@@ -234,6 +245,7 @@ int main(int argc, char **argv){
             // auto t_start = std::chrono::high_resolution_clock::now();
 
             // compute
+            #pragma omp parallel for
             for(int i = 0; i < num_ctx_per_cluster; i++){
                 Ciphertext sum;
                 vector<Ciphertext> tmp_mult;
@@ -319,7 +331,7 @@ int main(int argc, char **argv){
         int num_embed_per_ctx = slot_count / dim;
         int num_ctx_per_cluster = (node_per_cluster / num_embed_per_ctx) + 1;
 
-        return 0;
+        // return 0;
 
         // Waiting for server to be ready
         cout << "Waiting for server to be ready..." << endl;

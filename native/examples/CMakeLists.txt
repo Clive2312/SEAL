@@ -5,6 +5,9 @@ cmake_minimum_required(VERSION 3.13)
 
 project(SEALExamples VERSION 4.1.1 LANGUAGES CXX)
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+
 # If not called from root CMakeLists.txt
 if(NOT DEFINED SEAL_BUILD_EXAMPLES)
     set(SEAL_BUILD_EXAMPLES ON)
@@ -32,10 +35,15 @@ if(SEAL_BUILD_EXAMPLES)
             ${CMAKE_CURRENT_LIST_DIR}/8_performance.cpp
     )
 
+    find_package(OpenMP REQUIRED)
+
     target_sources(cluster_search
         PRIVATE
             ${CMAKE_CURRENT_LIST_DIR}/search/cluster_search.cpp
     )
+
+    # Link OpenMP
+    target_link_libraries(cluster_search PUBLIC OpenMP::OpenMP_CXX)
 
     if(TARGET SEAL::seal)
         target_link_libraries(sealexamples PRIVATE SEAL::seal)
