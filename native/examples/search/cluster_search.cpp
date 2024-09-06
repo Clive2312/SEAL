@@ -21,9 +21,9 @@ int num_queries = 1;
 int k = 10;
 
 // sift
-// int nc = 1000;
+// int nc = 1452;
 // size_t slot_count = 8192;
-// int dim = 1452;
+// int dim = 128;
 // int node_per_cluster = 1361;
 // int num_queries = 1;
 // int k = 10;
@@ -331,7 +331,7 @@ int main(int argc, char **argv){
         int num_embed_per_ctx = slot_count / dim;
         int num_ctx_per_cluster = (node_per_cluster / num_embed_per_ctx) + 1;
 
-        // return 0;
+        return 0;
 
         // Waiting for server to be ready
         cout << "Waiting for server to be ready..." << endl;
